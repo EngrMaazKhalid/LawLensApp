@@ -1,26 +1,3 @@
-// import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
-// import React from "react";
-
-// const StartPage = () => {
-//   return (
-//     <View style={styles.container}>
-//       <ActivityIndicator size={"large"} color={'#00D8C7'} />
-//     </View>
-//   );
-// };
-
-// export default StartPage;
-
-// const styles = StyleSheet.create({
-//   container:{
-//     flex: 1,
-//     justifyContent: "center",
-//     display: 'flex',
-//     alignItems:'center'
-
-//   }
-// })
-
 
 import React from "react";
 import { StatusBar } from "expo-status-bar";

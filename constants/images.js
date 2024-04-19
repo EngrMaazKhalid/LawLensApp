@@ -3,10 +3,14 @@ import thumbnail from "../assets/images/thumbnail.png";
 import cards from "../assets/images/cards.png";
 import path from "../assets/images/path.png";
 import logo from "../assets/images/logo.png";
-import logoSmall from "../assets/images/logo-small.png";
 import empty from "../assets/images/empty.png";
 import facebook from "../assets/images/facebook.png";
 import google from "../assets/images/google.png";
+import hammer from "../assets/images/hammer.png";
+import logoLaw from "../assets/images/small-logo.png";
+import ham from "../assets/images/lawlens-ham.png";
 
 
-export default { profile, thumbnail, cards, path, logo, logoSmall, empty, facebook, google };
+
+
+export default { profile, thumbnail, cards, path, logo, empty, facebook, google, hammer, logoLaw, ham };

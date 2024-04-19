@@ -16,7 +16,7 @@ const FormField = ({title, value, placeholder, handleChangeText, otherStyles }) 
         <View className='border-2 border-black-200 w-full h-16 px-4 bg-gray-200 
        items-center rounded-2xl focus:border-secondary flex-row'>
         <TextInput
-        className='flex-1 tex-white text-base font-pmedium'
+        className='flex-1 text-white text-base font-pmedium'
         value={value}
         placeholder={placeholder}
         placeholderTextColor={'#7b7b8b'}
