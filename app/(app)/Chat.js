@@ -278,14 +278,14 @@ const Chat = () => {
         setMessages(previousMessages =>
             GiftedChat.append(previousMessages, [message]))
     
-        fetch('https://api.openai.com/v1/chat/completions', {
+        fetch('https://ai-hubsweedengptfinetune505298337655.openai.azure.com/openai/deployments/gpt-4-sweden/chat/completions?api-version=2023-03-15-preview', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer sk-proj-2TFO1dbTHiYGafVL0vuOT3BlbkFJGLhponFp2ZPfLAAQwSzx'
+                'Authorization': 'Bearer 753d1b58c200470d9ba1fd988122a385'
             },
             body: JSON.stringify({
-                model: 'gpt-3.5-turbo',
+                // model: 'gpt-3.5-turbo',
                 messages: [
                     {
                         role: 'user',
@@ -314,11 +314,11 @@ const Chat = () => {
                     setMessages(previousMessage =>
                         GiftedChat.append(previousMessage, [message]))
                 } else {
-                    console.error('Unexpected response format from OpenAI API:', data);
+                    console.error('Unexpected response format  :', data);
                 }
             })
             .catch(error => {
-                console.error('Error fetching data from OpenAI API:', error);
+                console.error('Error fetching data from:', error);
             });
     }
     

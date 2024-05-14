@@ -1,4 +1,8 @@
+import { onAuthStateChanged } from "firebase/auth";
 import { Children, createContext, useContext, useEffect, useState } from "react";
+import { auth } from "../firebaseConfig";
+import { set } from "firebase/database";
+import { addDoc, setDoc } from "firebase/firestore";
 
 
 
@@ -10,10 +14,16 @@ export const AuthContextProvider = ({children}) =>{
 
     useEffect(()=>{
         //onAuthChanged
-
-        setTimeout(() => {
-            setisAuthenticated(false)
-        }, 3000);
+        const unsub =onAuthStateChanged(auth , (user) => {
+            if(user){
+                
+                setisAuthenticated(true);
+                setUser(user);
+            }else{
+                setisAuthenticated(false);
+                setUser(null);
+            }
+        })
     }, [])
     const login = async (email, password) =>{
         try{
@@ -31,12 +41,24 @@ export const AuthContextProvider = ({children}) =>{
 
         }
     }
-    const register = async (email, password, username, profileUrl) =>{
+    const register = async (email, password) =>{
         try{
+            const response = await createUserWithEmailAndPassword(auth, email, password);
+            console.log("response.user",response?.user);
+
+
+
+
+            await setDoc(doc(db, "users", response?.user?.uid), {
+                email,
+                profileUrl: profileUrl,
+                userId: response?.user?.uid,
+            });
+            return{ success: true, data: response?.user};
 
         }
         catch{
-
+            return {success: false, data: e.message};
         }
     }
 

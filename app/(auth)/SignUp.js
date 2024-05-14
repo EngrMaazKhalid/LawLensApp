@@ -16,7 +16,7 @@ const SignUp = () => {
   const [IsSubmitting, setIsSubmitting] = useState(false)
 
   const submit = () => {
-
+    router.push('/Welcome')
   }
 
 
@@ -24,12 +24,15 @@ const SignUp = () => {
   return (
    <SafeAreaView className='bg-primary h-full'>
    <ScrollView>
-    <View className='w-full h-full my-9 flex-1 justify-center px-4'>
+    <View className='w-full h-full my-6 flex-1 justify-center px-4'>
+    {/* <Image  source={images.logo}
+      className='w-[180px] h-[80px]'
+      resizeMode='contain'
+    /> */}
 
-
-      <Text className='text-white text-3xl font-psemibold mt-10'>Create your Account</Text>
+      <Text className='text-white text-3xl font-psemibold mt-10'>Sign Up to LawLens</Text>
       <FormField 
-        title='Email'
+        title='User Name'
         value={form.email}
         handleChangeText={(text)=> setform({...form, email: text})}
         otherStyles="mt-7"
@@ -37,31 +40,38 @@ const SignUp = () => {
 
       />
       <FormField 
+        title='Email'
+        value={form.email}
+        handleChangeText={(text)=> setform({...form, email: text})}
+        otherStyles="mt-5"
+        keyboardType='email-address'
+
+      />
+      <FormField 
         title='Password'
         value={form.password}
         handleChangeText={(text)=> setform({...form, password: text})}
-        otherStyles="mt-7"
+        otherStyles="mt-5"
         keyboardType='default'
         secureTextEntry={true}
         />
 
         <CustomButton
-        title="Sign Up"
+        title="Sign up"
         handlePress={submit}
-        containerStyle="mt-7 mb-5"
+        containerStyle="mt-7"
         isLoading={IsSubmitting}
          />
-      
 
     </View>
 
 
-    <View className='flex-row align-center mt-10 px-5'>
+    <View className='flex-row align-center mt-4 px-5'>
       <View className='flex-1 h-[1px] bg-gray-500 '></View>
       <Text className='text-white mx-4 -top-3 font-semibold text-sm'>or continue with</Text>
       <View className='flex-1 h-[1px] bg-gray-500 '></View>
     </View>
-    <View className='flex justify-center items-center px-5 my-5' >
+    <View className='flex justify-center items-center px-5 my-3' >
 <View className='flex-row'>
 <TouchableOpacity 
 className='min-w-[100px] bg-gray-200 rounded-3xl min-h-[62px] 
@@ -96,14 +106,14 @@ onPress={()=> {}}
 </TouchableOpacity>
 
 </View>
-<Text className='text-gray-100 mt-8 text-center text-sm font-pregular '>Already have an account?{' '}
+<Text className='text-gray-100 mt-5 text-center text-sm font-pregular '>Already have an account?{' '}
   
   <Text 
   onPress={()=> router.push('/SignIn')} 
   className='text-secondary font-psemibold'
   activeOpacity={0.7}
   >
-  SignIn
+  Sign In
  </Text>
  
  </Text>
