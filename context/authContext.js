@@ -1,81 +1,116 @@
-import { onAuthStateChanged } from "firebase/auth";
-import { Children, createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebaseConfig";
-import { set } from "firebase/database";
-import { addDoc, setDoc } from "firebase/firestore";
-
-
-
+import { createContext, useContext, useEffect, useState } from "react";
+import { auth, db } from "../firebaseConfig";
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 export const AuthContext = createContext();
-export const AuthContextProvider = ({children}) =>{
-    const [user , setUser] = useState(null);
-    const [isAuthenticated , setisAuthenticated ] = useState(undefined);
 
-    useEffect(()=>{
-        //onAuthChanged
-        const unsub =onAuthStateChanged(auth , (user) => {
-            if(user){
-                
-                setisAuthenticated(true);
-                setUser(user);
-            }else{
-                setisAuthenticated(false);
-                setUser(null);
-            }
-        })
-    }, [])
-    const login = async (email, password) =>{
-        try{
+export const AuthContextProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(undefined);
 
-        }
-        catch{
-            
-        }
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuthenticated(true);
+        setUser(user);
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    });
+    return unsub;
+  }, []);
+
+  const login = async (email, password) => {
+    try {
+      const response = await signInWithEmailAndPassword(auth, email, password);
+      setUser(response.user);
+      return { success: true, data: response.user };
+    } catch (e) {
+      return { success: false, msg: e.message };
     }
-    const logout = async () =>{
-        try{
+  };
 
-        }
-        catch{
-
-        }
+  const logout = async () => {
+    try {
+      await auth.signOut();
+      setUser(null);
+      setIsAuthenticated(false);
+    } catch (e) {
+      console.error(e.message);
     }
-    const register = async (email, password) =>{
-        try{
-            const response = await createUserWithEmailAndPassword(auth, email, password);
-            console.log("response.user",response?.user);
+  };
 
-
-
-
-            await setDoc(doc(db, "users", response?.user?.uid), {
-                email,
-                profileUrl: profileUrl,
-                userId: response?.user?.uid,
-            });
-            return{ success: true, data: response?.user};
-
-        }
-        catch{
-            return {success: false, data: e.message};
-        }
+  const register = async (email, password, userName) => {
+    try {
+      const response = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, "users", response.user.uid), {
+        email,
+        userName,
+        userId: response.user.uid,
+      });
+      setUser(response.user);
+      return { success: true, data: response.user };
+    } catch (e) {
+      return { success: false, msg: e.message };
     }
 
-    return(
-        <AuthContext.Provider value={{user,isAuthenticated, login, logout, register}}>
-            {children}
-        </AuthContext.Provider>
-    )
+  };
 
-}
 
-export const useAuth =() =>{
-    const value =useContext(AuthContext);
+    const saveChat = async (chat) => {
+      try {
+        const chatRef = doc(db, "chats", user.uid);
+        await updateDoc(chatRef, {
+          messages: arrayUnion(chat)
+        });
+      } catch (e) {
+        console.error("Error saving chat:", e.message);
+      }
+    };
 
-    if (!value) {
-        throw new Error('useAuth must be wrapped inside authContext Provider')
+    const getChats = async () => {
+      try {
+        const chatRef = doc(db, "chats", user.uid);
+        const chatSnap = await getDoc(chatRef);
+        if (chatSnap.exists()) {
+          return chatSnap.data().messages;
+        } else {
+          return [];
+        }
+      } catch (e) {
+        console.error("Error fetching chats:", e.message);
+        return [];
+      }
+    };
+    const deleteChat = async (chatId) => {
+      try {
+        const chatRef = doc(db, "chats", user.uid);
+        const chatSnap = await getDoc(chatRef);
+        if (chatSnap.exists()) {
+          const chats = chatSnap.data().messages.filter(chat => chat._id !== chatId);
+          await updateDoc(chatRef, { messages: chats });
+        }
+      } catch (e) {
+        console.error("Error deleting chat:", e.message);
+      }
+    };
 
-    }
-    return value;
-}
+
+
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const value = useContext(AuthContext);
+  if (!value) {
+    throw new Error('useAuth must be wrapped inside AuthContextProvider');
+  }
+  return value;
+};
+

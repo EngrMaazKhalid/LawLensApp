@@ -1,26 +1,55 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, ScrollView, Image, TouchableOpacity, Alert } from 'react-native'
+import React, { useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { images } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
-import { router } from 'expo-router'
+import { router, useRouter } from 'expo-router'
+import { useAuth } from '../../context/authContext'
+import CustomAlert from '../../components/CustomAlert'
 
 const SignUp = () => {
 
-  const [form, setform] = useState({
-    email: '',
-    password: ''
-  })
+  const router = useRouter();
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
+  const userNameRef = useRef("");
+  const { register } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertTitle, setAlertTitle] = useState("");
+  const handleRegister = async () => {
+    // if (!userNameRef.current || !emailRef.current || !passwordRef.current) {
+    //   Alert.alert('Sign Up', 'Please fill all fields');
+    //   return;
+    // }
 
-  const [IsSubmitting, setIsSubmitting] = useState(false)
+    if (!userNameRef.current || !emailRef.current || !passwordRef.current) {
+      setAlertTitle('Sign Up');
+      setAlertMessage('Please fill in all fields');
+      setAlertVisible(true);
+      return;
+    }
 
-  const submit = () => {
-    router.push('/Welcome')
+
+    setIsSubmitting(true);
+    let response = await register(emailRef.current, passwordRef.current, userNameRef.current);
+    setIsSubmitting(false);
+
+    // if (!response.success) {
+    //   Alert.alert('Sign Up', response.msg);
+    // } else {
+    //   router.push('/Welcome');
+    // }
+    if (!response.success) {
+      setAlertTitle('Sign Up');
+      setAlertMessage(response.msg);
+      setAlertVisible(true);
+    } else {
+      router.push('/Welcome');
+    }
   }
-
-
-
   return (
    <SafeAreaView className='bg-primary h-full'>
    <ScrollView>
@@ -33,24 +62,24 @@ const SignUp = () => {
       <Text className='text-white text-3xl font-psemibold mt-10'>Sign Up to LawLens</Text>
       <FormField 
         title='User Name'
-        value={form.email}
-        handleChangeText={(text)=> setform({...form, email: text})}
+        // value={form.email}
+        handleChangeText={(text)=> userNameRef.current= text}
         otherStyles="mt-7"
-        keyboardType='email-address'
+        keyboardType='default'
 
       />
       <FormField 
         title='Email'
-        value={form.email}
-        handleChangeText={(text)=> setform({...form, email: text})}
+        // value={form.email}
+        handleChangeText={(text)=> emailRef.current = text}
         otherStyles="mt-5"
         keyboardType='email-address'
 
       />
       <FormField 
         title='Password'
-        value={form.password}
-        handleChangeText={(text)=> setform({...form, password: text})}
+        // value={form.password}
+        handleChangeText={(text)=> passwordRef.current= text}
         otherStyles="mt-5"
         keyboardType='default'
         secureTextEntry={true}
@@ -58,9 +87,9 @@ const SignUp = () => {
 
         <CustomButton
         title="Sign up"
-        handlePress={submit}
+        handlePress={handleRegister}
         containerStyle="mt-7"
-        isLoading={IsSubmitting}
+        isLoading={isSubmitting}
          />
 
     </View>
@@ -120,6 +149,12 @@ onPress={()=> {}}
 </View>
 
     </ScrollView>
+    <CustomAlert
+        visible={alertVisible}
+        title={alertTitle}
+        message={alertMessage}
+        onClose={() => setAlertVisible(false)}
+      />
    </SafeAreaView>
   )
 }

@@ -1,62 +1,26 @@
-// import { View, Text, StyleSheet } from 'react-native'
-// import React, { useEffect } from 'react'
-// import { Slot, useRouter, useSegments } from 'expo-router'
-
-// import { AuthContextProvider, useAuth } from '../context/authContext'
-
-
-//   const MainLayout =()=>{
-//     const {isAuthenticated} = useAuth();
-//     const segments = useSegments();
-//     const router = useRouter(); 
-
-//     useEffect(()=>{
-//         if (typeof isAuthenticated== 'undefined') 
-//         return;
-
-//         const inApp = segments[0]=='(app)'
-
-//         if(isAuthenticated && !inApp){
-
-//           //redirect to home
-//           router.replace('home')
-//         }else if(isAuthenticated==false){
-
-//           //redirect to signin
-//           router.replace('signIn')
-//         }
-//     },[isAuthenticated])
-
-
-
-//     return <Slot />
-//   }
-
-// const RootLayout = () => {
-//   return (
-//     <AuthContextProvider style={styles.container}>
-//     <MainLayout />
-//     </AuthContextProvider>
-//   )
-// }
-
-// export default RootLayout 
-// const styles = StyleSheet.create({
-//   container:{
-//     flex: 1,
-    
-    
-//   }
-// })
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Slot, SplashScreen, Stack } from 'expo-router'
 import { useFonts } from "expo-font";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
+  const [isFirstLaunched, setIsFirstLaunched] = useState(null);
+
+useEffect(() => {
+  AsyncStorage.getItem('alreadyLaunched').then(value => {
+    if(value == null){
+      AsyncStorage.setItem('alreadyLaunched', 'true');
+      setIsFirstLaunched(true);
+    } else {
+      setIsFirstLaunched(false);
+    }
+  })
+},[])
+
     const [fontsLoaded, error] = useFonts({
         "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
         "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -75,14 +39,28 @@ const RootLayout = () => {
       }, [fontsLoaded, error]);
 if (!fontsLoaded && !error) return null;
 
+if(isFirstLaunched === null){
+  return null;
+} else if(isFirstLaunched === true){
   return (
-    <Stack>
+    <Stack screenOptions={{headerShown: false}}>
        <Stack.Screen name="index" options={{headerShown: false}} />
        <Stack.Screen name="(auth)" options={{headerShown: false}} />
        <Stack.Screen name="(app)" options={{headerShown: false}} />
     </Stack>
   )
 }
+else{
+  return (
+    <Stack screenOptions={{headerShown: false}} >
+       
+       <Stack.Screen name="(auth)" options={{headerShown: false}} />
+       <Stack.Screen name="(app)" options={{headerShown: false}} />
+    </Stack>
+  )
 
+
+}
+}
 export default RootLayout
 
