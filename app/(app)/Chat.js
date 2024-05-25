@@ -152,7 +152,7 @@ const Chat = () => {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'X-RapidAPI-Key': 'd3f8a93186mshf6a74ec48ff66b6p133358jsnc7e623524446',
+        'X-RapidAPI-Key': 'SIGN-UP-FOR-KEY',
         'X-RapidAPI-Host': 'chatgpt-42.p.rapidapi.com'
       },
       body: JSON.stringify({
