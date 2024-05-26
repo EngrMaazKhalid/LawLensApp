@@ -9,8 +9,9 @@ import google from "../assets/images/google.png";
 import hammer from "../assets/images/hammer.png";
 import logoLaw from "../assets/images/small-logo.png";
 import ham from "../assets/images/lawlens-ham.png";
+import maaz from "../assets/images/maaz.png";
 
 
 
 
-export default { profile, thumbnail, cards, path, logo, empty, facebook, google, hammer, logoLaw, ham };
+export default { profile, thumbnail, cards, path, logo, empty, facebook, google, hammer, logoLaw, ham, maaz };
