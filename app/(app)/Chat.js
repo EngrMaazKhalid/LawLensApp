@@ -15,7 +15,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [isFirstMessage, setIsFirstMessage] = useState(true); // Track if it's the first message
-  const { saveChat } = useAuth();
+  const { user, logout, getChats, deleteChat, saveChat } = useAuth();
   const initialPrompt = "Act as an AI lawyer. Your name is LawLens. You are a lawyer specifically trained on Pakistani constitution. You will provide answers to issues of people according to Pakistan's Law. The query asked to you will be of two types. First is a general query in which some information is asked about some constitution, article or any general information. In general query you will just answer the user generally with sufficient details and materials for reference. Second query is of specific guidance related to law. It can be of any type of question like: I was caught without a warrant. What should I do? Or I want to marry a non-Muslim girl. What does the Pakistan's Law say about it? In case of specific query, you will provide a properly formatted answer. I am attaching two examples for you regarding the format. Starting with the user prompt and then the response kt LawLens. The structure you will be following is of LawLens reply. Here we have 4 headings, first is issue summary that briefly covers issue, second is legal advice, third is expected judgement, and fourth is Reference section. Note: the format of answer is really important, carefully analyze the LawLens reply in the attached examples and your future answers should be exactly in the same format and proper references should be there just like in the example.";
 
   const handleInputMessage = (text) => {
@@ -79,7 +79,7 @@ const Chat = () => {
                    
                 />
                  <Image
-                    source={images.maaz}
+                  source={{ uri: user?.photoURL }}
                     style={{
                         height: 30,
                         width: 30,
@@ -143,14 +143,16 @@ const generateText = async () => {
     _id: messages.length + 1,
     text: inputMessage,
     createdAt: new Date(),
-    user: { _id: 1 },
+    user: { _id: 1
+    
+    },
   };
 
   setMessages((previousMessages) => GiftedChat.append(previousMessages, newMessage));
   setInputMessage('');
   setIsTyping(true);
 
-  const url = "https://wrkspc-westeurope-mlstudi-llam.westeurope.inference.ml.azure.com/score";
+  const url = "https://wrkspc-westeurope-mlstudi-lama.westeurope.inference.ml.azure.com/score";
   const requestBody = {
     // input_data: [inputMessage],
     // params: { some_param_key: "some_param_value" } // Adjust params if needed
@@ -170,8 +172,8 @@ const generateText = async () => {
 
   const requestHeaders = new Headers({
     "Content-Type": "application/json",
-    "Authorization": "Bearer API-key",
-    "azureml-model-deployment": "finetuned-llaama2-7b-lawlens-1"
+    "Authorization": "Bearer ",
+    "azureml-model-deployment": "llaama2-finetuned-latest-1"
   });
 
   try {

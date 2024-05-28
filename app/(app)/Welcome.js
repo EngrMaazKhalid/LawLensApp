@@ -1,7 +1,7 @@
 
 import { View, Text, SafeAreaView, ScrollView, FlatList, StatusBar, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { images } from '../../constants'
+import { Images, images } from '../../constants'
 import { Image } from 'react-native'
 import CustomButton from '../../components/CustomButton'
 import { router } from 'expo-router'
@@ -26,7 +26,10 @@ const Welcome = () => {
     await deleteChat(chatId);
     setSavedChats(savedChats.filter(chat => chat._id !== chatId));
   };
-
+  const handleLogout = async () => {
+    await logout();
+    router.push('/LetIn');
+  };
   const renderItem = ({ item }) => (
     <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#eee' }}>
       {/* <Text style={{ flex: 1, fontFamily: 'Poppins-Medium' }}>{item.text}</Text> */}
@@ -41,10 +44,24 @@ const Welcome = () => {
   return (
     <SafeAreaView className="bg-primary h-full">
 <StatusBar style="auto" backgroundColor="#161622" />
-           <View className='h-[100px] bg-gray-200 w-full px-3 flex-row align-center justify-between'>
-            <TouchableOpacity onPress={() => router.push('/Chat')}>
 
-            </TouchableOpacity>
+           <View className='h-[100px] bg-gray-200 w-full px-3 flex-row align-center justify-between'>
+           
+           <Image source={images.logoLaw} className='w-10 h-10 align-center justify-center flex-1 right-5 top-12' resizeMode='contain' />
+           <View className="flex-1 flex items-start justify-center">
+          
+    {/* <Text className='text-white mt-9 ml-5 text-2xl font-psemibold'>LawLens</Text> */}
+  </View>
+        <TouchableOpacity className='h-14 w-10 align-center justify-center absolute bottom-1 right-4'
+          onPress={() => router.push('/Settings')} activeOpacity={0.7}>
+          {user?.photoURL !== null ? (
+              <Image source={{ uri: user?.photoURL }} style={{ height: 40, width: 40, borderRadius: 50, marginRight: 3}} />
+            ) : (
+              <FontAwesome name="user" style={{display: 'flex', alignItems:'center' , justifyContent:'center', paddingLeft: 8 , paddingTop: 3, overflow: 'hidden' , backgroundColor:'#CDCDE0', height: 40, width: 40, borderRadius: 50}} size={35}  color="white" />
+            )}
+         
+          {/* <Image source={{ uri: user?.photoURL }} style={{ height: 40, width: 40, borderRadius: 50, marginRight: 3 }} /> */}
+        </TouchableOpacity>
            </View>
            
 <ScrollView contentContainerStyle={{ height: "100%" }}>
@@ -63,7 +80,7 @@ const Welcome = () => {
 <Text className='text-white mt-2 mb-5 text-center text-sm font-pregular '>Resolve your problems using LawLens!</Text>
 <CustomButton 
     title='Start Chat with you AI Lawyer'
-handlePress={()=> router.push('/Chat')}
+handlePress={()=> router.push('/Gpt')}
 containerStyle="mt-9"
 />
 </View>

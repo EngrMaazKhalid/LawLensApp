@@ -154,6 +154,7 @@ onPress={()=> {}}
         title={alertTitle}
         message={alertMessage}
         onClose={() => setAlertVisible(false)}
+        otherStyles={'bg-red-600'}
       />
    </SafeAreaView>
   )

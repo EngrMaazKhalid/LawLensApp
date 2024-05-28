@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 
-const CustomAlert = ({ visible, title, message, onClose,otherStyles }) => {
+const Alert = ({ visible, title, message, onClose,otherStyles, func }) => {
   return (
     <Modal
       animationType="slide"
@@ -13,9 +13,14 @@ const CustomAlert = ({ visible, title, message, onClose,otherStyles }) => {
         <View className='w-300 bg-gray-200 rounded-lg p-8 items-center shadow-gray' style={styles.modalView} >
           <Text className='font-pmedium text-xl text-white mb-6'>{title}</Text>
           <Text className='font-pmedium text-white mb-5 text-center'>{message}</Text>
-          <TouchableOpacity className={` p-2 rounded-xl w-20 shadow-md ${otherStyles}`} onPress={onClose}>
-            <Text className='font-psemibold text-base text-white text-center'>OK</Text>
+          <View className="flex-row justify-around">
+          <TouchableOpacity className={` p-2 rounded-xl w-20 shadow-md ${otherStyles}`}  onPress={func}>
+            <Text className='font-psemibold text-base text-white text-center'>Logout</Text>
           </TouchableOpacity>
+          <TouchableOpacity className={` p-2 border-2 border-secondary rounded-xl w-20 shadow-md ${otherStyles}`} onPress={onClose}>
+            <Text className='font-psemibold text-base text-white text-center'>Cancel</Text>
+          </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -23,12 +28,7 @@ const CustomAlert = ({ visible, title, message, onClose,otherStyles }) => {
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
+  
   modalView: {
     shadowOffset: {
       width: 0,
@@ -37,24 +37,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  
-  modalMessage: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  button: {
-    backgroundColor: 'red',
-    borderRadius: 5,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
+  }
 });
 
-export default CustomAlert;
+export default Alert;

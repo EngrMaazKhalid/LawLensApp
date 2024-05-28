@@ -10,10 +10,6 @@ import { router, useRouter } from 'expo-router'
 import { useRef } from 'react'
 import { useAuth } from '../../context/authContext';
 import CustomAlert from '../../components/CustomAlert'
-// import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin'
-// GoogleSignin.configure({
-//   webClientId: 'YOUR_WEB_CLIENT_ID', // Replace with your web client ID from Google Console
-// });
 
 
 const SignIn = () => {
@@ -33,21 +29,11 @@ const SignIn = () => {
       setAlertVisible(true);
       return;
     }
-  // const handleLogin = async () => {
-  //   if (!emailRef.current || !passwordRef.current) {
-  //     Alert.alert('Sign in', 'Please fill in all fields');
-  //     return;
-  //   }
 
     setIsSubmitting(true);
     let response = await login(emailRef.current, passwordRef.current);
     setIsSubmitting(false);
 
-    // if (!response.success) {
-    //   Alert.alert('Sign in', response.msg);
-    // } else {
-    //   router.push('/Welcome');
-    // }
 
     if (!response.success) {
       setAlertTitle('Sign in');
@@ -138,6 +124,7 @@ const SignIn = () => {
         visible={alertVisible}
         title={alertTitle}
         message={alertMessage}
+        otherStyles={'bg-red-600'}
         onClose={() => setAlertVisible(false)}
       />
     </SafeAreaView>
