@@ -13,7 +13,7 @@ const Gpt = () => {
     const [inputMessage, setInputMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [isTyping, setIsTyping] = useState(false);
-    const { user, logout, getChats, deleteChat, saveChat } = useAuth();
+    const { user, getChats, saveChat } = useAuth();
     const initialPrompt = "Act as an AI lawyer. Your name is LawLens. You are a lawyer specifically trained on Pakistani constitution. You will provide answers to issues of people according to Pakistan's Law. The query asked to you will be of two types. First is a general query in which some information is asked about some constitution, article or any general information. In general query you will just answer the user generally with sufficient details and materials for reference. Second query is of specific guidance related to law. It can be of any type of question like: I was caught without a warrant. What should I do? Or I want to marry a non-Muslim girl. What does the Pakistan's Law say about it? In case of specific query, you will provide a properly formatted answer. I am attaching two examples for you regarding the format. Starting with the user prompt and then the response kt LawLens. The structure you will be following is of LawLens reply. Here we have 4 headings, first is issue summary that briefly covers issue, second is legal advice, third is expected judgement, and fourth is Reference section. Note: the format of answer is really important, carefully analyze the LawLens reply in the attached examples and your future answers should be exactly in the same format and proper references should be there just like in the example."
   
     const handleInputMessage = (text) => {
@@ -112,7 +112,7 @@ const Gpt = () => {
       setInputMessage('');
       setIsTyping(true);
   
-      const apiKey = 'api';
+      const apiKey = 'sk-proj-C64hoDnwR0J9ZpFQgFhbT3BlbkFJqVku7pggh2ty48n1Boyj';
       const config = {
         model: 'gpt-4',
         messages: [
@@ -148,18 +148,19 @@ const Gpt = () => {
         console.error("Error fetching data:", error);
       } finally {
         setIsTyping(false);
-        saveChat({ _id: Date.now(), messages });
+        // saveChat({ _id: Date.now(), messages });
       }
     };
   
     const handleBookmark = async () => {
-      try {
-        await saveChat(messages);
-        console.log('Chat saved successfully');
-      } catch (e) {
-        console.error('Error saving chat:', e.message);
-      }
-    };
+        try {
+          await saveChat({ _id: Date.now(), messages });
+          console.log('Chat saved successfully');
+        } catch (e) {
+          console.error('Error saving chat:', e.message);
+        }
+      };
+  
   
     return (
       <SafeAreaView className="bg-primary h-full">

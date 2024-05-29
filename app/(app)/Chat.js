@@ -152,7 +152,7 @@ const generateText = async () => {
   setInputMessage('');
   setIsTyping(true);
 
-  const url = "https://wrkspc-westeurope-mlstudi-lama.westeurope.inference.ml.azure.com/score";
+  const url = "https://wrkspc-westeurope-mlstudi-nvnku.westeurope.inference.ml.azure.com/score";
   const requestBody = {
     // input_data: [inputMessage],
     // params: { some_param_key: "some_param_value" } // Adjust params if needed
@@ -172,8 +172,8 @@ const generateText = async () => {
 
   const requestHeaders = new Headers({
     "Content-Type": "application/json",
-    "Authorization": "Bearer ",
-    "azureml-model-deployment": "llaama2-finetuned-latest-1"
+    "Authorization": "Bearer gzBYmdrdbVquVrhh6PhaadR3L24Qtwjd",
+    "azureml-model-deployment": "finetuned-llaama2-7b-lawlens-1"
   });
 
   try {
@@ -192,20 +192,48 @@ const generateText = async () => {
     //   const botMessageText = result[0]['0']; // Accessing the generated text
     //   console.log("Bot message text:", botMessageText); // Log the full text
 
+    // if (Array.isArray(result) && result.length > 0 && result[0]["0"]) {
+    //   const botMessageText = result[0]["0"]; // Accessing the generated text
+    //   console.log("Bot message text:", botMessageText); // Log the full text
+  
+
+
+    //   const botMessage = {
+    //     _id: messages.length + 2,
+    //     text: botMessageText, // Ensure this is a string
+    //     createdAt: new Date(),
+    //     user: { _id: 2, name: 'LawLens' },
+    //   };
+
+    //   setMessages((previousMessages) => GiftedChat.append(previousMessages, botMessage));
+    //   console.log(result)
+    // } 
     if (Array.isArray(result) && result.length > 0 && result[0]["0"]) {
       const botMessageText = result[0]["0"]; // Accessing the generated text
-      console.log("Bot message text:", botMessageText); // Log the full text
-  
-      const botMessage = {
-        _id: messages.length + 2,
-        text: botMessageText, // Ensure this is a string
-        createdAt: new Date(),
-        user: { _id: 2, name: 'LawLens' },
-      };
+      
+      // Split the botMessageText based on "Issue Summary"
+      const splitText = botMessageText.split("Issue");
 
-      setMessages((previousMessages) => GiftedChat.append(previousMessages, botMessage));
-      console.log(result)
-    } else {
+      // Check if "Issue Summary" exists and the split text has two parts
+      if (splitText.length === 2) {
+        // The second part of the split text will contain the content after "Issue Summary"
+        const modelAnswer = splitText[1].trim();
+
+        // Create the bot message using the extracted model answer
+        const botMessage = {
+          _id: messages.length + 2,
+          text: modelAnswer, // Use the extracted model answer
+          createdAt: new Date(),
+          user: { _id: 2, name: 'LawLens' },
+        };
+
+        setMessages((previousMessages) => GiftedChat.append(previousMessages, botMessage));
+        console.log(result);
+      } else {
+        console.error("Invalid response structure:", result);
+      }
+    }
+    else {
       console.error("Invalid response structure:", result);
     }
   } catch (error) {
@@ -231,11 +259,14 @@ const generateText = async () => {
     <SafeAreaView className="bg-primary h-full">
            <StatusBar style="auto" backgroundColor="#161622" />
            <View className='h-[100px] bg-gray-200 w-full px-3 flex-row align-center justify-between'>
-             <TouchableOpacity className='h-14 w-14 align-center justify-center absolute bottom-1 left-5'
+             {/* <TouchableOpacity className='h-14 w-14 align-center justify-center absolute bottom-1 left-5'
                onPress={() => router.back()} activeOpacity={0.7}>
                <AntDesign name="left" size={30} color={'#CDCDE0'} />
+             </TouchableOpacity> */}
+             <TouchableOpacity className='h-14 w-14  flex align-center justify-center absolute bottom-1 left-5'
+               onPress={()=> router.push('/Welcome')} activeOpacity={0.7}>
+               <AntDesign name="left" size={30} color={'#CDCDE0'} />
              </TouchableOpacity>
-    
              <Image source={images.logoLaw} className='w-12 h-12 align-center justify-center flex-1 top-11' resizeMode='contain' />
              <TouchableOpacity className='h-14 w-14 align-center justify-center absolute right-0 bottom-1'
                onPress={handleBookmark} activeOpacity={0.7}>

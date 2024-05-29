@@ -10,6 +10,8 @@ const ChatLayout = () => {
             <Stack.Screen name="Welcome" options={{headerShown: false}} />
             <Stack.Screen name="Chat" options={{headerShown: false}} />
             <Stack.Screen name="Gpt" options={{headerShown: false}} />
+            <Stack.Screen name="Open" options={{headerShown: false}} />
+            <Stack.Screen name="Option" options={{headerShown: false}} />
             <Stack.Screen name="Settings" options={{headerShown: false}} />
             <StatusBar style="light" backgroundColor="#161622" />
         </Stack>

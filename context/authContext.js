@@ -10,11 +10,15 @@ export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(undefined);
 
+  
   // useEffect(() => {
-  //   const unsub = onAuthStateChanged(auth, (user) => {
+  //   const unsub = onAuthStateChanged(auth, async (user) => {
   //     if (user) {
+  //       const userDoc = await getDoc(doc(db, "users", user.uid));
+  //       if (userDoc.exists()) {
+  //         setUser({ ...user, ...userDoc.data() });
+  //       }
   //       setIsAuthenticated(true);
-  //       setUser(user);
   //     } else {
   //       setIsAuthenticated(false);
   //       setUser(null);
@@ -22,10 +26,12 @@ export const AuthContextProvider = ({ children }) => {
   //   });
   //   return unsub;
   // }, []);
+
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const userDoc = await getDoc(doc(db, "users", user?.uid));
         if (userDoc.exists()) {
           setUser({ ...user, ...userDoc.data() });
         }
@@ -38,16 +44,6 @@ export const AuthContextProvider = ({ children }) => {
     return unsub;
   }, []);
 
-
-  // const login = async (email, password) => {
-  //   try {
-  //     const response = await signInWithEmailAndPassword(auth, email, password);
-  //     setUser(response.user);
-  //     return { success: true, data: response.user };
-  //   } catch (e) {
-  //     return { success: false, msg: e.message };
-  //   }
-  // };
 
 
   const login = async (email, password) => {
@@ -94,45 +90,34 @@ export const AuthContextProvider = ({ children }) => {
 
   };
 
-
   const saveChat = async (chat) => {
-    try {
-      const existingChats = await AsyncStorage.getItem('chats');
-      const chats = existingChats ? JSON.parse(existingChats) : [];
-      // Ensure the chat object has a messages array
-      const newChat = { _id: Date.now().toString(), messages: chat.messages || [] };
-      chats.push(newChat);
-      await AsyncStorage.setItem('chats', JSON.stringify(chats));
-    } catch (error) {
-      console.error('Error saving chat:', error);
+    if (user) {
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        await updateDoc(userDocRef, {
+          chats: arrayUnion(chat),
+        });
+      } catch (e) {
+        console.error('Error saving chat:', e.message);
+      }
     }
   };
-  
+
   const getChats = async () => {
     try {
-      const chats = await AsyncStorage.getItem('chats');
-      return chats ? JSON.parse(chats) : [];
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      return userDoc.exists() ? userDoc.data().chats : [];
     } catch (error) {
       console.error('Error retrieving chats:', error);
       return [];
     }
   };
 
-  const deleteChat = async (chatId) => {
-    try {
-      const existingChats = await AsyncStorage.getItem('chats');
-      const chats = existingChats ? JSON.parse(existingChats) : [];
-      const updatedChats = chats.filter(chat => chat._id !== chatId);
-      await AsyncStorage.setItem('chats', JSON.stringify(updatedChats));
-    } catch (error) {
-      console.error('Error deleting chat:', error);
-    }
-  };
 
 
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register, saveChat, deleteChat, getChats }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, register, getChats, saveChat }}>
       {children}
     </AuthContext.Provider>
   );
@@ -214,6 +199,16 @@ export const useAuth = () => {
     //   }
     // };
   
+    // const deleteChat = async (chatId) => {
+    //   try {
+    //     const existingChats = await AsyncStorage.getItem('chats');
+    //     const chats = existingChats ? JSON.parse(existingChats) : [];
+    //     const updatedChats = chats.filter(chat => chat._id !== chatId);
+    //     await AsyncStorage.setItem('chats', JSON.stringify(updatedChats));
+    //   } catch (error) {
+    //     console.error('Error deleting chat:', error);
+    //   }
+    // };
     // const getChats = () => {
     //   try {
     //     const chats = JSON.parse(localStorage.getItem('chats')) || [];
@@ -240,6 +235,19 @@ export const useAuth = () => {
   //     const existingChats = await AsyncStorage.getItem('chats');
   //     const chats = existingChats ? JSON.parse(existingChats) : [];
   //     chats.push(chat);
+  //     await AsyncStorage.setItem('chats', JSON.stringify(chats));
+  //   } catch (error) {
+  //     console.error('Error saving chat:', error);
+  //   }
+  // };
+
+  // const saveChat = async (chat) => {
+  //   try {
+  //     const existingChats = await AsyncStorage.getItem('chats');
+  //     const chats = existingChats ? JSON.parse(existingChats) : [];
+  //     // Ensure the chat object has a messages array
+  //     const newChat = { _id: Date.now().toString(), messages: chat.messages || [] };
+  //     chats.push(newChat);
   //     await AsyncStorage.setItem('chats', JSON.stringify(chats));
   //   } catch (error) {
   //     console.error('Error saving chat:', error);
